@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Voice Detection | Multi-Language</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-microphone-lines"></i>
+                <span>VoiceVerify AI</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#" class="active">Detect</a>
+                <a href="#about">About</a>
+                <a href="#api-docs">API Docs</a>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="hero-section">
+                <h1>AI-Generated Voice Detection</h1>
+                <p class="subtitle">Detect AI-generated voices across <span class="highlight">5 languages</span> with advanced audio analysis</p>
+                
+                <div class="language-badges">
+                    <span class="badge" data-lang="en">🇬🇧 English</span>
+                    <span class="badge" data-lang="ta">🇮🇳 Tamil</span>
+                    <span class="badge" data-lang="hi">🇮🇳 Hindi</span>
+                    <span class="badge" data-lang="ml">🇮🇳 Malayalam</span>
+                    <span class="badge" data-lang="te">🇮🇳 Telugu</span>
+                </div>
+            </div>
+
+            <div class="detection-container">
+                <!-- Upload Section -->
+                <div class="upload-section">
+                    <div class="upload-tabs">
+                        <button class="tab-btn active" data-tab="upload">
+                            <i class="fas fa-upload"></i> Upload File
+                        </button>
+                        <button class="tab-btn" data-tab="record">
+                            <i class="fas fa-microphone"></i> Record Voice
+                        </button>
+                    </div>
+
+                    <!-- File Upload Tab -->
+                    <div class="tab-content active" id="upload-tab">
+                        <div class="drop-zone" id="dropZone">
+                            <div class="drop-zone-content">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Drag & drop your audio file here</p>
+                                <span class="or-divider">or</span>
+                                <label class="file-label">
+                                    <input type="file" id="audioFile" accept=".mp3,.wav,.ogg,.m4a" hidden>
+                                    <span class="browse-btn">Browse Files</span>
+                                </label>
+                                <p class="file-hint">Supports MP3, WAV, OGG, M4A (Max 10MB)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Record Tab -->
+                    <div class="tab-content" id="record-tab">
+                        <div class="record-section">
+                            <div class="record-visualizer" id="visualizer">
+                                <canvas id="audioCanvas"></canvas>
+                            </div>
+                            <div class="record-controls">
+                                <button class="record-btn" id="recordBtn">
+                                    <i class="fas fa-microphone"></i>
+                                </button>
+                                <span class="record-status" id="recordStatus">Click to start recording</span>
+                                <span class="record-timer hidden" id="recordTimer">00:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Audio Preview -->
+                    <div class="audio-preview hidden" id="audioPreview">
+                        <div class="preview-header">
+                            <i class="fas fa-file-audio"></i>
+                            <span class="file-name" id="fileName">audio-sample.mp3</span>
+                            <button class="remove-btn" id="removeFile">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <audio id="audioPlayer" controls></audio>
+                    </div>
+
+                    <!-- Language Selection -->
+                    <div class="language-select">
+                        <label>Select Language (Optional):</label>
+                        <select id="languageSelect">
+                            <option value="auto">Auto Detect</option>
+                            <option value="en">English</option>
+                            <option value="ta">Tamil</option>
+                            <option value="hi">Hindi</option>
+                            <option value="ml">Malayalam</option>
+                            <option value="te">Telugu</option>
+                        </select>
+                    </div>
+
+                    <!-- Analyze Button -->
+                    <button class="analyze-btn" id="analyzeBtn" disabled>
+                        <i class="fas fa-waveform-lines"></i>
+                        <span>Analyze Voice</span>
+                    </button>
+                </div>
+
+                <!-- Results Section -->
+                <div class="results-section hidden" id="resultsSection">
+                    <div class="result-header">
+                        <h2>Analysis Results</h2>
+                        <button class="new-analysis-btn" id="newAnalysisBtn">
+                            <i class="fas fa-redo"></i> New Analysis
+                        </button>
+                    </div>
+
+                    <div class="result-card" id="resultCard">
+                        <!-- Classification Badge -->
+                        <div class="classification-badge" id="classificationBadge">
+                            <i class="fas fa-robot" id="classificationIcon"></i>
+                            <span id="classificationText">AI Generated</span>
+                        </div>
+
+                        <!-- Confidence Meter -->
+                        <div class="confidence-section">
+                            <div class="confidence-label">
+                                <span>Confidence Score</span>
+                                <span class="confidence-value" id="confidenceValue">95%</span>
+                            </div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" id="confidenceFill"></div>
+                            </div>
+                        </div>
+
+                        <!-- Details Grid -->
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <i class="fas fa-language"></i>
+                                <div class="detail-content">
+                                    <span class="detail-label">Detected Language</span>
+                                    <span class="detail-value" id="detectedLanguage">English</span>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-clock"></i>
+                                <div class="detail-content">
+                                    <span class="detail-label">Processing Time</span>
+                                    <span class="detail-value" id="processingTime">1.2s</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Explanation -->
+                        <div class="explanation-section">
+                            <h3><i class="fas fa-info-circle"></i> Analysis Explanation</h3>
+                            <p id="explanationText">The audio sample exhibits characteristics consistent with AI-generated speech...</p>
+                        </div>
+
+                        <!-- Audio Characteristics -->
+                        <div class="characteristics-section">
+                            <h3><i class="fas fa-chart-bar"></i> Audio Characteristics</h3>
+                            <div class="characteristics-grid" id="characteristicsGrid">
+                                <!-- Will be populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading Overlay -->
+                <div class="loading-overlay hidden" id="loadingOverlay">
+                    <div class="loader">
+                        <div class="loader-ring"></div>
+                        <i class="fas fa-waveform-lines"></i>
+                    </div>
+                    <p>Analyzing voice sample...</p>
+                    <span class="loading-hint">This may take a few seconds</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- About Section -->
+        <section class="about-section" id="about">
+            <h2>How It Works</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-upload"></i>
+                    <h3>Upload Audio</h3>
+                    <p>Upload an MP3 audio file or record directly from your microphone</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-brain"></i>
+                    <h3>AI Analysis</h3>
+                    <p>Our advanced ML model analyzes voice patterns, pitch, and artifacts</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-pie"></i>
+                    <h3>Get Results</h3>
+                    <p>Receive detailed classification with confidence scores and explanations</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- API Docs Section -->
+        <section class="api-section" id="api-docs">
+            <h2>API Documentation</h2>
+            <div class="api-card">
+                <div class="api-endpoint">
+                    <span class="method">POST</span>
+                    <code>/detect-voice</code>
+                </div>
+                <div class="api-details">
+                    <h4>Request Body</h4>
+                    <pre><code>{
+  "audio_base64": "base64_encoded_mp3_data",
+  "language": "auto" // optional: en, ta, hi, ml, te
+}</code></pre>
+                    <h4>Response</h4>
+                    <pre><code>{
+  "classification": "AI_GENERATED" | "HUMAN",
+  "confidence": 0.95,
+  "language": "English",
+  "explanation": "Analysis details...",
+  "characteristics": {
+    "pitch_variance": 0.85,
+    "spectral_flatness": 0.72,
+    "natural_pauses": false
+  }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Built by <strong>Team 404 Found</strong> for GUVI Buildathon 2026</p>
+            <div class="footer-links">
+                <a href="https://github.com/Elvin227788/guvi-buildathon" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
